@@ -44,7 +44,12 @@ servers:
         default: '1'
         description: Game setting ID
 channels:
-  game_{setting_id}:
+  'game_{setting_id}':
+    parameters:
+      setting_id:
+        description: Game setting ID
+        schema:
+          type: string
     subscribe:
       message:
         name: receivePaddleInstruction
