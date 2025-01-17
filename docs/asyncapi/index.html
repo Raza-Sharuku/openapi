@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pong Logic API Documentation</title>
+    
+    <!-- Tailwind CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <!-- AsyncAPIのスタイルシートを追加 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/@asyncapi/react-component/1.0.0-next.47/styles/default.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/@asyncapi/react-component/1.0.0-next.47/browser/standalone/index.js"></script>
+    
+    <!-- AsyncAPI Generator Default Template -->
+    <script src="https://unpkg.com/@asyncapi/web-component@1.0.0-next.47/lib/asyncapi-web-component.js" defer></script>
+    
     <style>
-        #asyncapi-documentation {
+        asyncapi-component {
             height: calc(100vh - 64px);
             width: 100%;
+            display: block;
         }
         .header {
             height: 64px;
@@ -27,10 +29,8 @@
         </div>
     </nav>
     
-    <div id="asyncapi-documentation"></div>
-
-    <script>
-        const spec = `asyncapi: 3.0.0
+    <asyncapi-component
+        schema="asyncapi: 3.0.0
 info:
   title: Pong Logic API
   version: 1.0.0
@@ -81,64 +81,64 @@ channels:
           properties:
             id:
               type: integer
-              description: "このponglogicが使用しているGamesettingのid"
+              description: このponglogicが使用しているGamesettingのid
             left_paddle_y:
               type: integer
-              description: "左パドルのy座標"
+              description: 左パドルのy座標
             right_paddle_y:
               type: integer
-              description: "右パドルのy座標"
+              description: 右パドルのy座標
             ball_x:
               type: integer
-              description: "ボールのx座標"
+              description: ボールのx座標
             ball_y:
               type: integer
-              description: "ボールのy座標"
+              description: ボールのy座標
             ball_radius:
               type: integer
-              description: "ボールの半径"
+              description: ボールの半径
             left_score:
               type: integer
-              description: "左プレイヤーの得点"
+              description: 左プレイヤーの得点
             right_score:
               type: integer
-              description: "右プレイヤーの得点"
+              description: 右プレイヤーの得点
             obstacle1_x:
               type: integer
-              description: "障害物1のx座標 (初回のみ)"
+              description: 障害物1のx座標 (初回のみ)
             obstacle1_y:
               type: integer
-              description: "障害物1のy座標 (初回のみ)"
+              description: 障害物1のy座標 (初回のみ)
             obstacle1_width:
               type: integer
-              description: "障害物1の幅 (初回のみ)"
+              description: 障害物1の幅 (初回のみ)
             obstacle1_height:
               type: integer
-              description: "障害物1の高さ (初回のみ)"
+              description: 障害物1の高さ (初回のみ)
             obstacle2_x:
               type: integer
-              description: "障害物2のx座標 (初回のみ)"
+              description: 障害物2のx座標 (初回のみ)
             obstacle2_y:
               type: integer
-              description: "障害物2のy座標 (初回のみ)"
+              description: 障害物2のy座標 (初回のみ)
             obstacle2_width:
               type: integer
-              description: "障害物2の幅 (初回のみ)"
+              description: 障害物2の幅 (初回のみ)
             obstacle2_height:
               type: integer
-              description: "障害物2の高さ (初回のみ)"
+              description: 障害物2の高さ (初回のみ)
             blind_x:
               type: integer
-              description: "ボール隠しのx座標 (初回のみ)"
+              description: ボール隠しのx座標 (初回のみ)
             blind_y:
               type: integer
-              description: "ボール隠しのy座標 (初回のみ)"
+              description: ボール隠しのy座標 (初回のみ)
             blind_width:
               type: integer
-              description: "ボール隠しの幅 (初回のみ)"
+              description: ボール隠しの幅 (初回のみ)
             blind_height:
               type: integer
-              description: "ボール隠しの高さ (初回のみ)"
+              description: ボール隠しの高さ (初回のみ)
       sendGameOver.message:
         description: ゲームの終了報告を送信するメッセージ
         contentType: application/json
@@ -149,16 +149,16 @@ channels:
               type: string
               enum:
                 - game_over
-              description: "このmessageのタイプ"
+              description: このmessageのタイプ
             winner:
               type: string
-              description: "勝者の名前"
+              description: 勝者の名前
             left_score:
               type: integer
-              description: "左プレイヤーの得点"
+              description: 左プレイヤーの得点
             right_score:
               type: integer
-              description: "右プレイヤーの得点"
+              description: 右プレイヤーの得点
     description: Channel for game events
 operations:
   receivePaddleInstruction:
@@ -178,27 +178,8 @@ operations:
     channel:
       $ref: '#/channels/game'
     messages:
-      - $ref: '#/channels/game/messages/sendGameOver.message'`;
-
-        window.onload = function() {
-            try {
-                AsyncApiStandalone.render({
-                    schema: spec,
-                    config: {
-                        show: {
-                            sidebar: true
-                        }
-                    }
-                }, document.getElementById('asyncapi-documentation'));
-            } catch (error) {
-                console.error('Error loading AsyncAPI documentation:', error);
-                document.getElementById('asyncapi-documentation').innerHTML = `
-                    <div class="p-4 text-red-600">
-                        Error loading documentation. Please check the console for details.
-                    </div>
-                `;
-            }
-        };
-    </script>
+      - $ref: '#/channels/game/messages/sendGameOver.message'"
+        cssImportPath="https://unpkg.com/@asyncapi/react-component@1.0.0-next.47/styles/default.min.css">
+    </asyncapi-component>
 </body>
 </html>
