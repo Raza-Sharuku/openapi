@@ -1,8 +1,22 @@
+# asyncapi: 3.0.0
+# info:
+#   title: Pong Logic API
+#   version: 1.0.0
+#   description: Websocketを用いてPongロジックとのリアルタイム通信を行うAPIです。
+# servers:
+#   production:
+#     host: localhost:8443
+#     pathname: /gameplay.ws/ponglogic/{settingId}
+#     protocol: wss
+#     variables:
+#       settingId:
+#         default: '1'
+#         description: Game setting ID
 asyncapi: 3.0.0
 info:
   title: Pong Logic API
   version: 1.0.0
-  description: Websocketを用いてPongロジックとのリアルタイム通信を行うAPIです。
+  description: "WebSocketを使用したPongゲームのロジックAPI"
 servers:
   production:
     host: localhost:8443
@@ -11,7 +25,7 @@ servers:
     variables:
       settingId:
         default: '1'
-        description: Game setting ID
+        description: ゲーム設定ID
 channels:
   game:
     address: game_{setting_id}
