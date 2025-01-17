@@ -5,9 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-time API Documentation</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <!-- シンタックスハイライト用 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <!-- highlight.jsを使用してYAMLのシンタックスハイライトを実現 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+    <style>
+        .hljs {
+            background: #f8f9fa;
+            padding: 1em;
+            border-radius: 0.5em;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        #yaml-content {
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .copy-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <nav class="bg-gray-800 text-white p-4">
@@ -18,32 +38,50 @@
     </nav>
 
     <div class="container mx-auto mt-4 p-4">
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-semibold mb-4">Gameplay API Specification</h2>
+        <div class="bg-white rounded-lg shadow-md p-6 relative">
+            <button onclick="copyYaml()" class="copy-button bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-sm">
+                Copy YAML
+            </button>
             <pre><code id="yaml-content" class="language-yaml"></code></pre>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
     <script>
         async function loadYamlContent() {
             try {
                 const response = await fetch('Gameplay.yaml');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch YAML file');
+                }
                 const text = await response.text();
                 
-                // YAMLコンテンツを表示用の要素に設定
+                // YAMLコンテンツを表示
                 const codeElement = document.getElementById('yaml-content');
                 codeElement.textContent = text;
                 
                 // シンタックスハイライトを適用
-                Prism.highlightElement(codeElement);
+                hljs.highlightElement(codeElement);
                 
             } catch (error) {
-                console.error('Error loading YAML file:', error);
+                console.error('Error:', error);
                 document.getElementById('yaml-content').innerHTML = 
                     'エラーが発生しました。YAMLファイルの読み込みに失敗しました。';
             }
+        }
+
+        function copyYaml() {
+            const codeElement = document.getElementById('yaml-content');
+            navigator.clipboard.writeText(codeElement.textContent)
+                .then(() => {
+                    const button = document.querySelector('.copy-button');
+                    button.textContent = 'Copied!';
+                    setTimeout(() => {
+                        button.textContent = 'Copy YAML';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy:', err);
+                });
         }
 
         window.onload = loadYamlContent;
