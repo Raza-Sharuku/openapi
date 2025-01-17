@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Gameplay AsyncAPI Documentation</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/asyncapi-playground/0.0.1/styles.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="asyncapi"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/asyncapi-playground/0.0.1/bundle.min.js"></script>
+    <script>
+      AsyncApiPlayground.render({
+        schema: './Gameplay.yaml',
+        element: '#asyncapi'
+      });
+    </script>
+  </body>
+</html>
