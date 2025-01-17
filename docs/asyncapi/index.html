@@ -1,87 +1,49 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>AsyncAPI Documentation</title>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type="module" src="https://unpkg.com/@asyncapi/web-component@1.0.0-next.47/lib/asyncapi-web-component.js"></script>
-    <style>
-      body {
-        margin: 0;
-        padding: 20px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      }
-      
-      .container {
-        max-width: 1460px;
-        margin: 0 auto;
-      }
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time API Documentation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Real-time API Documentation</h1>
+            <a href="../index.html" class="text-white hover:text-gray-300">Back to Home</a>
+        </div>
+    </nav>
 
-      .header {
-        margin-bottom: 20px;
-      }
-
-      .header h1 {
-        margin: 0;
-        color: #2d3748;
-      }
-
-      .header p {
-        margin: 10px 0 0;
-        color: #4a5568;
-      }
-
-      asyncapi-component {
-        --asyncapi-primary-color: #2563eb;
-        --asyncapi-secondary-color: #1e40af;
-        --asyncapi-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        --asyncapi-code-font-family: 'Fira Code', monospace;
-        --asyncapi-border-radius: 4px;
-        --asyncapi-background-color: #ffffff;
-        --asyncapi-text-color: #1a202c;
-        display: block;
-        margin-top: 20px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <h1>Pong Logic API Documentation</h1>
-        <p>WebSocket-based real-time communication API for Pong game logic</p>
-      </div>
-      
-      <asyncapi-component
-        schemaUrl="./Gameplay.yaml"
-        cssImportPath="https://unpkg.com/@asyncapi/web-component@1.0.0-next.47/lib/styles/default.min.css"
-        config='{
-          "show": {
-            "sidebar": true,
-            "info": true,
-            "servers": true,
-            "operations": true,
-            "messages": true,
-            "schemas": true
-          },
-          "expand": {
-            "messageExamples": true,
-            "schemas": true
-          },
-          "sidebar": {
-            "showOperations": true,
-            "showMessages": true,
-            "showSchemas": true
-          }
-        }'
-      >
-      </asyncapi-component>
+    <div class="container mx-auto mt-4 p-4">
+        <div id="asyncapi-docs"></div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/asyncapi-playground/0.0.1/asyncapi-playground.js"></script>
     <script>
-      // YAMLファイルの読み込み時にエンコーディングを確保
-      document.querySelector('asyncapi-component').addEventListener('error', (error) => {
-        console.error('AsyncAPI loading error:', error);
-      });
+        async function loadAsyncAPI() {
+            try {
+                const response = await fetch('Gameplay.yaml');
+                const spec = await response.text();
+                
+                const playground = new AsyncAPIPlayground({
+                    target: '#asyncapi-docs',
+                    spec: spec,
+                    config: {
+                        show: {
+                            sidebar: true
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading AsyncAPI spec:', error);
+                document.getElementById('asyncapi-docs').innerHTML = 
+                    '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">' +
+                    'Error loading API documentation. Please try again later.</div>';
+            }
+        }
+
+        window.onload = loadAsyncAPI;
     </script>
-  </body>
+</body>
 </html>

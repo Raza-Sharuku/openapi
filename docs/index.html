@@ -1,55 +1,36 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Documentation</title>
-    <meta charset="utf-8"/>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 40px;
-      }
-      h1 {
-        color: #2c3e50;
-      }
-      .api-section {
-        margin-bottom: 30px;
-      }
-      .api-section h2 {
-        color: #34495e;
-      }
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
-      li {
-        margin: 10px 0;
-      }
-      a {
-        color: #3498db;
-        text-decoration: none;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>API Documentation</h1>
-    <div class="api-section">
-      <h2>AsyncAPI</h2>
-      <ul>
-        <li><a href="./asyncapi/Gameplay.yaml">Gameplay API Specification (YAML)</a></li>
-        <li><a href="./asyncapi/">Gameplay API Documentation (UI)</a></li>
-      </ul>
-    </div>
-    <div class="api-section">
-      <h2>OpenAPI</h2>
-      <ul>
-        <li><a href="./openapi/Accounts.yaml">Accounts API Specification (YAML)</a></li>
-        <li><a href="./openapi/OAuth.yaml">OAuth API Specification (YAML)</a></li>
-        <li><a href="./openapi/Tournament.yaml">Tournament API Specification (YAML)</a></li>
-        <li><a href="./openapi/">OpenAPI Documentation (UI)</a></li>
-      </ul>
-    </div>
-  </body>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto">
+            <h1 class="text-2xl font-bold">API Documentation</h1>
+        </div>
+    </nav>
+    
+    <main class="container mx-auto mt-8 p-4">
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">REST API Documentation</h2>
+                <p class="mb-4">Access our REST API documentation including authentication, accounts, and tournament endpoints.</p>
+                <a href="openapi/index.html" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">View OpenAPI Docs</a>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">Real-time API Documentation</h2>
+                <p class="mb-4">Explore our real-time API documentation for gameplay and live features.</p>
+                <a href="asyncapi/index.html" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">View AsyncAPI Docs</a>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="mt-8 p-4 text-center text-gray-600">
+        <p>Last updated: 2025</p>
+    </footer>
+</body>
 </html>

@@ -1,112 +1,54 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>OpenAPI Documentation</title>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.12.0/swagger-ui.min.css" />
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-      }
-      #swagger-ui {
-        max-width: 1460px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-      .swagger-ui .topbar {
-        display: none;
-      }
-      .swagger-ui .info .title small.version-stamp {
-        background-color: #89bf04;
-      }
-      .swagger-ui .info {
-        margin: 20px 0;
-      }
-      .swagger-ui select {
-        border: 2px solid #41444e;
-        border-radius: 4px;
-        padding: 5px 40px 5px 10px;
-        background: #fff;
-      }
-      .url-selector {
-        margin: 20px 0;
-        padding: 10px;
-        background: #fafafa;
-        border-radius: 4px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="swagger-ui"></div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">REST API Documentation</h1>
+            <a href="../index.html" class="text-white hover:text-gray-300">Back to Home</a>
+        </div>
+    </nav>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.12.0/swagger-ui-bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.12.0/swagger-ui-standalone-preset.min.js"></script>
+    <div class="container mx-auto mt-4 p-4">
+        <div class="mb-4">
+            <select id="specSelector" class="p-2 border rounded" onchange="loadSpec(this.value)">
+                <option value="Accounts.yaml">Accounts API</option>
+                <option value="OAuth.yaml">OAuth API</option>
+                <option value="Tournament.yaml">Tournament API</option>
+            </select>
+        </div>
+        <div id="swagger-ui"></div>
+    </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-standalone-preset.js"></script>
     <script>
-      window.onload = function() {
-        const ui = SwaggerUIBundle({
-          urls: [
-            {
-              name: "Accounts API",
-              url: "./Accounts.yaml"
-            },
-            {
-              name: "OAuth API",
-              url: "./OAuth.yaml"
-            },
-            {
-              name: "Tournament API",
-              url: "./Tournament.yaml"
-            }
-          ],
-          dom_id: '#swagger-ui',
-          deepLinking: true,
-          displayRequestDuration: true,
-          filter: true,
-          withCredentials: true,
-          presets: [
-            SwaggerUIBundle.presets.apis,
-            SwaggerUIStandalonePreset
-          ],
-          plugins: [
-            SwaggerUIBundle.plugins.DownloadUrl
-          ],
-          layout: "StandaloneLayout",
-          defaultModelsExpandDepth: -1,
-          defaultModelExpandDepth: 3,
-          defaultModelRendering: 'model',
-          docExpansion: 'list',
-          showExtensions: true,
-          showCommonExtensions: true,
-          supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
-          tryItOutEnabled: true,
-          requestSnippetsEnabled: true,
-          requestSnippets: {
-            generators: {
-              curl_bash: {
-                title: "cURL (bash)",
-                syntax: "bash"
-              },
-              curl_powershell: {
-                title: "cURL (PowerShell)",
-                syntax: "powershell"
-              }
-            }
-          }
-        });
-
-        // URLのハッシュに基づいて適切なAPIを選択
-        const hash = window.location.hash;
-        if (hash) {
-          const apiName = hash.slice(1);
-          const select = document.querySelector('.swagger-ui select');
-          if (select) {
-            select.value = apiName;
-          }
+        function loadSpec(specFile) {
+            const ui = SwaggerUIBundle({
+                url: specFile,
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "BaseLayout"
+            });
         }
-      }
+        
+        // Load default spec
+        window.onload = function() {
+            loadSpec('Accounts.yaml');
+        }
     </script>
-  </body>
+</body>
 </html>
