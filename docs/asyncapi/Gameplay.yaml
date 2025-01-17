@@ -12,11 +12,40 @@
 #       settingId:
 #         default: '1'
 #         description: Game setting ID
+# channels:
+#   game:
+#     address: game_{setting_id}
+#     messages:
+#       receivePaddleInstruction.message:
+#         description: パドルに対する指示を受け取るメッセージ
+#         contentType: application/json
+#         payload:
+#           type: object
+#           required:
+#             - side
+#             - move_direction
+#             - action
+#           properties:
+#             side:
+#               type: string
+#               enum:
+#                 - left
+#                 - right
+#             move_direction:
+#               type: string
+#               enum:
+#                 - up
+#                 - down
+#             action:
+#               type: string
+#               enum:
+#                 - start
+#                 - stop
 asyncapi: 3.0.0
 info:
   title: Pong Logic API
   version: 1.0.0
-  description: "WebSocketを使用したPongゲームのロジックAPI"
+  description: WebSocketを使用したPongゲームのロジックAPI
 servers:
   production:
     host: localhost:8443
@@ -31,7 +60,7 @@ channels:
     address: game_{setting_id}
     messages:
       receivePaddleInstruction.message:
-        description: パドルに対する指示を受け取るメッセージ
+        description: パドルの移動指示を受信
         contentType: application/json
         payload:
           type: object
