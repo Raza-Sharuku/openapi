@@ -37,138 +37,154 @@ info:
   description: Websocketを用いてPongロジックとのリアルタイム通信を行うAPIです。
 servers:
   production:
-    url: localhost:8443/gameplay.ws/ponglogic/{settingId}
+    url: wss://localhost:8443/gameplay.ws/ponglogic/{settingId}
     protocol: wss
     variables:
       settingId:
         default: '1'
         description: Game setting ID
 channels:
-  'game_{setting_id}':
+  game_{setting_id}:
+    description: Channel for game events
     parameters:
       setting_id:
         description: Game setting ID
         schema:
           type: string
     subscribe:
+      operationId: receivePaddleInstruction
+      summary: Receive paddle instructions
       message:
-        name: receivePaddleInstruction
-        title: Paddle Instruction
-        description: パドルに対する指示を受け取るメッセージ
-        contentType: application/json
-        payload:
-          type: object
-          required:
-            - side
-            - move_direction
-            - action
-          properties:
-            side:
-              type: string
-              enum:
-                - left
-                - right
-            move_direction:
-              type: string
-              enum:
-                - up
-                - down
-            action:
-              type: string
-              enum:
-                - start
-                - stop
+        $ref: '#/components/messages/receivePaddleInstruction.message'
     publish:
+      operationId: sendGameState
+      summary: Send game state updates
       message:
         oneOf:
-          - name: sendPongData
-            title: Game State
-            description: Pongのデータを送信するメッセージ
-            contentType: application/json
-            payload:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: このponglogicが使用しているGamesettingのid
-                left_paddle_y:
-                  type: integer
-                  description: 左パドルのy座標
-                right_paddle_y:
-                  type: integer
-                  description: 右パドルのy座標
-                ball_x:
-                  type: integer
-                  description: ボールのx座標
-                ball_y:
-                  type: integer
-                  description: ボールのy座標
-                ball_radius:
-                  type: integer
-                  description: ボールの半径
-                left_score:
-                  type: integer
-                  description: 左プレイヤーの得点
-                right_score:
-                  type: integer
-                  description: 右プレイヤーの得点
-                obstacle1_x:
-                  type: integer
-                  description: 障害物1のx座標 (初回のみ)
-                obstacle1_y:
-                  type: integer
-                  description: 障害物1のy座標 (初回のみ)
-                obstacle1_width:
-                  type: integer
-                  description: 障害物1の幅 (初回のみ)
-                obstacle1_height:
-                  type: integer
-                  description: 障害物1の高さ (初回のみ)
-                obstacle2_x:
-                  type: integer
-                  description: 障害物2のx座標 (初回のみ)
-                obstacle2_y:
-                  type: integer
-                  description: 障害物2のy座標 (初回のみ)
-                obstacle2_width:
-                  type: integer
-                  description: 障害物2の幅 (初回のみ)
-                obstacle2_height:
-                  type: integer
-                  description: 障害物2の高さ (初回のみ)
-                blind_x:
-                  type: integer
-                  description: ボール隠しのx座標 (初回のみ)
-                blind_y:
-                  type: integer
-                  description: ボール隠しのy座標 (初回のみ)
-                blind_width:
-                  type: integer
-                  description: ボール隠しの幅 (初回のみ)
-                blind_height:
-                  type: integer
-                  description: ボール隠しの高さ (初回のみ)
-          - name: sendGameOver
-            title: Game Over
-            description: ゲームの終了報告を送信するメッセージ
-            contentType: application/json
-            payload:
-              type: object
-              properties:
-                type:
-                  type: string
-                  enum:
-                    - game_over
-                  description: このmessageのタイプ
-                winner:
-                  type: string
-                  description: 勝者の名前
-                left_score:
-                  type: integer
-                  description: 左プレイヤーの得点
-                right_score:
-                  type: integer
-                  description: 右プレイヤーの得点"
+          - $ref: '#/components/messages/sendPongData.message'
+          - $ref: '#/components/messages/sendGameOver.message'
+components:
+  messages:
+    receivePaddleInstruction.message:
+      name: receivePaddleInstruction.message
+      title: Paddle Instruction Message
+      description: パドルに対する指示を受け取るメッセージ
+      contentType: application/json
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - side
+          - move_direction
+          - action
+        properties:
+          side:
+            type: string
+            enum:
+              - left
+              - right
+          move_direction:
+            type: string
+            enum:
+              - up
+              - down
+          action:
+            type: string
+            enum:
+              - start
+              - stop
+    sendPongData.message:
+      name: sendPongData.message
+      title: Game State Message
+      description: Pongのデータを送信するメッセージ
+      contentType: application/json
+      payload:
+        type: object
+        additionalProperties: false
+        properties:
+          id:
+            type: integer
+            description: このponglogicが使用しているGamesettingのid
+          left_paddle_y:
+            type: integer
+            description: 左パドルのy座標
+          right_paddle_y:
+            type: integer
+            description: 右パドルのy座標
+          ball_x:
+            type: integer
+            description: ボールのx座標
+          ball_y:
+            type: integer
+            description: ボールのy座標
+          ball_radius:
+            type: integer
+            description: ボールの半径
+          left_score:
+            type: integer
+            description: 左プレイヤーの得点
+          right_score:
+            type: integer
+            description: 右プレイヤーの得点
+          obstacle1_x:
+            type: integer
+            description: 障害物1のx座標 (初回のみ)
+          obstacle1_y:
+            type: integer
+            description: 障害物1のy座標 (初回のみ)
+          obstacle1_width:
+            type: integer
+            description: 障害物1の幅 (初回のみ)
+          obstacle1_height:
+            type: integer
+            description: 障害物1の高さ (初回のみ)
+          obstacle2_x:
+            type: integer
+            description: 障害物2のx座標 (初回のみ)
+          obstacle2_y:
+            type: integer
+            description: 障害物2のy座標 (初回のみ)
+          obstacle2_width:
+            type: integer
+            description: 障害物2の幅 (初回のみ)
+          obstacle2_height:
+            type: integer
+            description: 障害物2の高さ (初回のみ)
+          blind_x:
+            type: integer
+            description: ボール隠しのx座標 (初回のみ)
+          blind_y:
+            type: integer
+            description: ボール隠しのy座標 (初回のみ)
+          blind_width:
+            type: integer
+            description: ボール隠しの幅 (初回のみ)
+          blind_height:
+            type: integer
+            description: ボール隠しの高さ (初回のみ)
+    sendGameOver.message:
+      name: sendGameOver.message
+      title: Game Over Message
+      description: ゲームの終了報告を送信するメッセージ
+      contentType: application/json
+      payload:
+        type: object
+        additionalProperties: false
+        properties:
+          type:
+            type: string
+            enum:
+              - game_over
+            description: このmessageのタイプ
+          winner:
+            type: string
+            description: 勝者の名前
+          left_score:
+            type: integer
+            description: 左プレイヤーの得点
+          right_score:
+            type: integer
+            description: 右プレイヤーの得点"
         cssImportPath="https://unpkg.com/@asyncapi/react-component@1.0.0-next.47/styles/default.min.css">
     </asyncapi-component>
 </body>
