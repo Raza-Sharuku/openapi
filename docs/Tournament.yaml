@@ -1,0 +1,260 @@
+openapi: 3.0.0
+info:
+  title: Tournament Management API
+  description: |
+    トーナメント管理システムのAPI仕様
+    - トーナメントの作成と管理
+    - 試合結果の記録
+    - プレイヤー情報の管理
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/SHAHRUKH4062_1/Tournament/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: http://localhost:8000
+  description: 開発サーバー
+paths:
+  /api/tournaments/register:
+    post:
+      tags:
+      - tournaments
+      summary: トーナメント登録
+      description: 8人のプレイヤーでトーナメントを作成します
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 8
+              maxItems: 8
+              items:
+                type: string
+              example:
+              - Player 1
+              - Player 2
+              - Player 3
+              - Player 4
+              - Player 5
+              - Player 6
+              - Player 7
+              - Player 8
+        required: true
+      responses:
+        "201":
+          description: トーナメント作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TournamentDetail'
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Require 8 players
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /api/tournaments/{tournament_id}:
+    get:
+      tags:
+      - tournaments
+      summary: トーナメント情報取得
+      description: 指定されたIDのトーナメント情報を取得します
+      parameters:
+        - name: tournament_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: トーナメント情報取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TournamentDetail'
+        "404":
+          description: トーナメントが見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No tournament found
+    
+    put:
+      tags:
+      - tournaments
+      summary: 試合結果の更新
+      description: トーナメントの試合結果を更新します
+      parameters:
+        - name: tournament_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentMatch:
+                  $ref: '#/components/schemas/MatchUpdate'
+      responses:
+        "200":
+          description: 試合結果更新成功
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Match'
+                  - type: object
+                    properties:
+                      match:
+                        $ref: '#/components/schemas/Match'
+                      tournament_complete:
+                        type: boolean
+                      winner:
+                        type: string
+        "400":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No match data provided
+        "404":
+          description: 試合が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Match not found
+
+components:
+  schemas:
+    Tournament:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: Tournament 2024-12-28 15:30
+        date:
+          type: string
+          format: date
+          example: 2024-12-28
+        is_over:
+          type: boolean
+        winner:
+          $ref: '#/components/schemas/Player'
+          nullable: true
+
+    Player:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: Player 1
+
+    Match:
+      type: object
+      properties:
+        id:
+          type: integer
+        tournament:
+          $ref: '#/components/schemas/Tournament'
+        match_number:
+          type: integer
+          minimum: 1
+          example: 1
+        round:
+          type: integer
+          minimum: 1
+          example: 1
+        timestamp:
+          type: string
+          format: date-time
+        player1:
+          $ref: '#/components/schemas/Player'
+        player2:
+          $ref: '#/components/schemas/Player'
+        player1_score:
+          type: integer
+          minimum: 0
+          example: 0
+        player2_score:
+          type: integer
+          minimum: 0
+          example: 0
+        winner:
+          $ref: '#/components/schemas/Player'
+          nullable: true
+
+    MatchUpdate:
+      type: object
+      properties:
+        match_number:
+          type: integer
+          minimum: 1
+        round:
+          type: integer
+          minimum: 1
+        player1_score:
+          type: integer
+          minimum: 0
+        player2_score:
+          type: integer
+          minimum: 0
+        winner:
+          type: string
+          enum: [player1, player2]
+        player1:
+          type: object
+          properties:
+            id:
+              type: integer
+        player2:
+          type: object
+          properties:
+            id:
+              type: integer
+
+    TournamentDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        date:
+          type: string
+          format: date
+        matches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Match'
