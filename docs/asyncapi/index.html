@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-time API Documentation</title>
-    <link href="https://unpkg.com/@asyncapi/web-component@1.0.0-next.47/styles/default.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/@asyncapi/web-component@1.0.0-next.47/lib/asyncapi-web-component.js" defer></script>
+    
+    <!-- AsyncAPI React Component -->
+    <script src="https://unpkg.com/@asyncapi/react-component@1.0.0-next.47/browser/standalone.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@asyncapi/react-component@1.0.0-next.47/styles/default.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <style>
-        body { margin: 0; }
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
         .header {
             background-color: #1a202c;
             color: white;
@@ -15,17 +26,43 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
         .header a {
             color: white;
             text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            background-color: rgba(255,255,255,0.1);
+            transition: background-color 0.2s;
         }
+        
         .header a:hover {
-            text-decoration: underline;
+            background-color: rgba(255,255,255,0.2);
         }
-        asyncapi-component {
-            --width: 100%;
-            --height: calc(100vh - 60px);
+        
+        #asyncapi-docs {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            #asyncapi-docs {
+                padding: 1rem;
+                margin-top: 1rem;
+            }
         }
     </style>
 </head>
@@ -35,9 +72,48 @@
         <a href="../index.html">Back to Home</a>
     </div>
 
-    <asyncapi-component
-        schemaUrl="Gameplay.yaml"
-        cssImportPath="https://unpkg.com/@asyncapi/web-component@1.0.0-next.47/styles/default.min.css">
-    </asyncapi-component>
+    <div id="asyncapi-docs"></div>
+
+    <script>
+        async function loadAsyncAPI() {
+            try {
+                const response = await fetch('Gameplay.yaml');
+                const text = await response.text();
+                
+                const AsyncApiStandalone = window.AsyncApiStandalone;
+                AsyncApiStandalone.render({
+                    schema: text,
+                    config: {
+                        show: {
+                            sidebar: true,
+                            info: true,
+                            servers: true,
+                            operations: true,
+                            messages: true,
+                            schemas: true
+                        },
+                        expand: {
+                            messageExamples: true
+                        },
+                        theme: {
+                            primary: {
+                                main: '#1a202c'
+                            }
+                        }
+                    }
+                }, document.getElementById('asyncapi-docs'));
+                
+            } catch (error) {
+                console.error('Error loading AsyncAPI spec:', error);
+                document.getElementById('asyncapi-docs').innerHTML = `
+                    <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 1rem; border-radius: 4px;">
+                        エラーが発生しました。APIドキュメントの読み込みに失敗しました。
+                    </div>
+                `;
+            }
+        }
+
+        window.onload = loadAsyncAPI;
+    </script>
 </body>
 </html>

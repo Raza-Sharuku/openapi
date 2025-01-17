@@ -1,21 +1,24 @@
-asyncapi: 2.6.0  # 3.0.0から2.6.0に変更
+asyncapi: 2.6.0
 info:
   title: Pong Logic API
   version: 1.0.0
   description: Websocketを用いてPongロジックとのリアルタイム通信を行うAPIです。
 servers:
   production:
-    url: localhost:8443/gameplay.ws/ponglogic/{settingId}  # hostとpathnameをurlに統合
+    url: 'localhost:8443/gameplay.ws/ponglogic/{settingId}'
     protocol: wss
+    description: Production server
     variables:
       settingId:
-        default: '1'
         description: Game setting ID
+        default: '1'
 channels:
   game:
-    subscribe:  # receiveを明示的にsubscribeとして定義
+    description: Game events channel
+    publish:
+      operationId: receivePaddleInstruction
       message:
-        name: receivePaddleInstruction
+        name: paddleInstruction
         contentType: application/json
         payload:
           type: object
@@ -39,9 +42,10 @@ channels:
               enum:
                 - start
                 - stop
-    publish:  # sendを明示的にpublishとして定義
+    subscribe:
+      operationId: sendGameData
       message:
-        oneOf:  # 複数のメッセージタイプを定義
+        oneOf:
           - name: sendPongData
             contentType: application/json
             payload:
